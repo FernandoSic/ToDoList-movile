@@ -1,6 +1,6 @@
 
 const {Router} = require('express');
-const {createTask, completedTask, getTasks, detailTask} = require('../controllers/task.controller');
+const {createTask, completedTask, getTasks, detailTask, deleteTask} = require('../controllers/task.controller');
 const auth = require('../middlewares/auth.middleware');
 
 
@@ -11,6 +11,7 @@ router.get('/', getTasks);
 router.get('/:id', detailTask);
 router.post('/', createTask);
 router.patch('/:id/complete', completedTask);
+router.delete('/:id', deleteTask);
 
 
 module.exports = router;

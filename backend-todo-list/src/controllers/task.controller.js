@@ -74,4 +74,21 @@ const completedTask = async (req, res) => {
     }  
 };
 
-module.exports = { createTask, completedTask, getTasks, detailTask };
+const deleteTask = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const task = await Task.findOneAndDelete({
+            _id: id,
+            userId: req.userId
+        });
+        if (!task) {
+            return res.status(404).json({ message: 'Tarea no encontrada' });
+        }
+        res.json({ message: 'Tarea eliminada exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+module.exports = { createTask, completedTask, getTasks, detailTask, deleteTask };

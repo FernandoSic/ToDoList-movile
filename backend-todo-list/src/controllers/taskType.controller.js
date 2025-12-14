@@ -3,13 +3,18 @@ const TaskType = require('../models/TaskType');
 const getTaskTypes = async (req, res) => {
     try {
         const userId = req.userId;
-        const taskTypes = await TaskType.find({ $or: [{ userId }, { userId: null }] }).sort({ name: 1 });
+        // Obtener tipos globales (createdBy: null) y tipos del usuario actual
+        const taskTypes = await TaskType.find({ 
+            $or: [
+                { createdBy: null }, 
+                { createdBy: userId }
+            ] 
+        }).sort({ name: 1 });
         res.json(taskTypes);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error interno del servidor' });
     }
-
 };
 
 const creatreTaskType = async (req, res) => {

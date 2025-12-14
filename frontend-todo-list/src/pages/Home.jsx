@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Card, Stack, CircularProgress, Chip } from '@mui/material';
 import { getTasksRequest } from '../api/task.api';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+    const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -27,6 +29,22 @@ export default function Home() {
 
     return (
         <Box sx={{ width: '100%' }}>
+        {/* Mensaje de bienvenida */}
+        <Box sx={{ mb: 3 }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 800, 
+                    background: 'linear-gradient(135deg, #1e88e5 0%, #3949ab 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                }}
+            >
+                Hola, {user?.username}!
+            </Typography>
+        </Box>
+
         {/* Cards resumen */}
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 4 }}>
             <Card sx={{ p: 3, flex: 1, background: 'linear-gradient(135deg, #e3f2fd 0%, #f5f7fa 100%)', border: '2px solid', borderColor: 'primary.light' }}>

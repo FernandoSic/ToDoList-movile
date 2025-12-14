@@ -26,8 +26,11 @@ export const AuthProvider = ({ children }) => {
         setToken(res.data.token);
         setUser(res.data.user);
     };
-    const register = async (data) => {
-        await registerRequest(data);
+    const register = async (credentials) => {
+        const res = await registerRequest(credentials);
+        saveAuth(res.data.token, res.data.user);
+        setToken(res.data.token);
+        setUser(res.data.user);
     };
 
     const logout = () => {

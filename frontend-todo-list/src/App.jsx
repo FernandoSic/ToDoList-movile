@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { Box, CircularProgress } from '@mui/material';
+import BottomNav from './components/Navbar';
+import Header from './components/Header';
 
 // Pages
 import Home from './pages/Home';
@@ -43,9 +45,23 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  const { isAuth } = useAuth();
+
   return (
     <BrowserRouter>
-      <Routes>
+      {isAuth && <Header />}
+      <Box
+        sx={{
+          pt: isAuth ? { xs: 2, sm: 3 } : 0,
+          pb: isAuth ? { xs: 10, sm: 12 } : { xs: 0, sm: 0 },
+          px: { xs: 1.5, sm: 3 },
+          maxWidth: 1200,
+          mx: 'auto',
+          width: '100%'
+        }}
+      >
+        <Routes>
+        
         <Route 
           path="/login" 
           element={
@@ -99,6 +115,8 @@ function App() {
           }
         />
       </Routes>
+      </Box>
+      {isAuth && <BottomNav />}
     </BrowserRouter>
   );
 }

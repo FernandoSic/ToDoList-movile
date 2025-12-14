@@ -50,18 +50,21 @@ export default function Login() {
                 minHeight: '100vh',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                py: 4
             }}
             >
-            <Card sx={{ p: 4, width: '100%' }}>
-                <Typography variant="h4" textAlign="center" gutterBottom>
+            <Card sx={{ p: { xs: 3, sm: 4 }, width: '100%' }}>
+                <Typography variant="h4" textAlign="center" gutterBottom sx={{ mb: 3 }}>
                 Iniciar sesión
                 </Typography>
 
                 {error && (
-                <Typography color="error" textAlign="center" mb={2}>
-                    {error}
-                </Typography>
+                <Box sx={{ p: 2, bgcolor: 'error.light', borderRadius: 1, mb: 2 }}>
+                    <Typography color="error" textAlign="center" variant="body2">
+                        {error}
+                    </Typography>
+                </Box>
                 )}
 
                 <Box component="form" onSubmit={handleSubmit}>
@@ -91,16 +94,16 @@ export default function Login() {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 3, mb: 2 }}
                 >
                     Entrar
                 </Button>
 
                 <Button
-                    variant="text"
+                    variant="outlined"
                     fullWidth
-                    sx={{ mt: 1 }}
                     onClick={() => navigate('/register')}
+                    sx={{ borderColor: 'primary.main', color: 'primary.main' }}
                 >
                     ¿No tienes cuenta? Regístrate
                 </Button>

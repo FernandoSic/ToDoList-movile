@@ -113,6 +113,7 @@ export default function Register() {
                     fullWidth
                     margin="normal"
                     required
+                    helperText="Mínimo 8 caracteres, una mayúscula y un número"
                     value={form.password}
                     onChange={handleChange}
                 />

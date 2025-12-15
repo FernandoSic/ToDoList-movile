@@ -65,11 +65,12 @@ const register = async (req, res) => {
         );
 
         // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
+        // sameSite: 'Lax' permite enviar cookie en requests cross-origin de mismo sitio
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            maxAge: 86400000
+            secure: false,      // true solo en HTTPS producción
+            sameSite: 'Lax',    
+            maxAge: 86400000    // 1 día
         });
 
         res.status(201).json({
@@ -112,12 +113,12 @@ const login = async (req, res) => {
         );
 
         // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
-        // Enviar token en cookie httpOnly (no accesible a JavaScript)
+        // sameSite: 'Lax' permite enviar cookie en requests cross-origin
         res.cookie('token', token, {
-            httpOnly: true,      // No accesible a JavaScript (protege contra XSS)
-            secure: false,       
-            sameSite: 'strict', 
-            maxAge: 86400000     // 1 día
+            httpOnly: true,
+            secure: false,
+            sameSite: 'Lax',
+            maxAge: 86400000
         });
 
         // No devolver token en JSON, solo datos de usuario

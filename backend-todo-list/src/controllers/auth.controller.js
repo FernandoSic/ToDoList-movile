@@ -65,11 +65,12 @@ const register = async (req, res) => {
         );
 
         // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
-        // sameSite: 'Lax' permite enviar cookie en requests cross-origin de mismo sitio
+        // En producción (cross-domain): sameSite='None' + secure=true
+        const isProduction = process.env.NODE_ENV === 'production';
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,      // true solo en HTTPS producción
-            sameSite: 'Lax',    
+            secure: isProduction,           // true en HTTPS (producción)
+            sameSite: isProduction ? 'None' : 'Lax',  // 'None' permite cross-domain en producción
             maxAge: 86400000    // 1 día
         });
 
@@ -113,11 +114,12 @@ const login = async (req, res) => {
         );
 
         // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
-        // sameSite: 'Lax' permite enviar cookie en requests cross-origin
+        // En producción (cross-domain): sameSite='None' + secure=true
+        const isProduction = process.env.NODE_ENV === 'production';
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'Lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 86400000
         });
 

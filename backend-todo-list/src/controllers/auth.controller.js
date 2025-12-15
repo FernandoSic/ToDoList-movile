@@ -2,13 +2,14 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+//Vulnerabilidad: FALTA DE VALIDACIÓN DE ENTRADA
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
-
+        //Vulnerabilidad: ENUMERACIÓN DE USUARIOS
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({ message: 'El usuario ya existe' });
+            return res.status(400).json({ message: 'El usuario ya existe' }); 
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

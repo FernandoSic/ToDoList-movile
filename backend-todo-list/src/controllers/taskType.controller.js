@@ -17,6 +17,7 @@ const getTaskTypes = async (req, res) => {
     }
 };
 
+// Vulnerabilidad:  FALTA DE AUTORIZACIÓN (IDOR)
 const creatreTaskType = async (req, res) => {
     try {
         const { name } = req.body;

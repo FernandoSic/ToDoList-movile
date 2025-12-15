@@ -1,8 +1,11 @@
 // Vulnerabilidad 4: EXPOSICIÓN DE TOKEN EN localStorage (XSS - Cross-Site Scripting)
-// Definición: Guardar JWT en localStorage, accesible a cualquier script JS en la página.
-// Repercusiones: Un ataque XSS roba token instantáneamente, session hijacking completo, impersonación de usuario, acceso total a datos.
-// Mitigación: Almacenar token en cookie httpOnly/Secure/SameSite (inaccesible a JS), usar validación de autenticación en backend.
-// Práctica de seguridad aplicable: PRIVACIDAD VISUAL (token oculto en httpOnly cookie) + COOKIES (httpOnly/Secure/SameSite).
+
+// Cambio: Modificar backend para enviar token en httpOnly cookie; eliminar saveAuth/getToken del frontend (axios usa cookies automáticamente)
+// Por qué: Token no accesible a JavaScript; protege contra robo por XSS; 
+// Cómo mitigará: Atacante XSS no podrá leer localStorage; cookie solo se envía en requests HTTP automáticos, no accesible a JS malicioso
+// Tiempo estimado: 20 minutos
+// Archivos a modificar: 3 (auth.controller.js backend, auth.middleware.js backend, storage.js frontend)
+// Responsable: Fernando Jose Sic
 const TOKEN_KEY = 'token';
 const USER_KEY = 'user';
 

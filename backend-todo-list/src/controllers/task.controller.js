@@ -33,6 +33,9 @@ const detailTask = async (req, res) => {
 const createTask = async (req, res) => {
     try {
         const { title, description, type } = req.body;
+        // Vulnerabilidad 3: FALTA DE AUTORIZACIÓN (IDOR - Insecure Direct Object Reference)
+        // Antes de crear la tarea, validar que el 'type' pertenezca al usuario o sea global
+        // Previene IDOR: evita que usuario A cree tareas con types privados de usuario B
         const newTask = new Task({
             title,
             description,

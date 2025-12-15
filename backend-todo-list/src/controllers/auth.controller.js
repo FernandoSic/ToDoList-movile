@@ -3,18 +3,22 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 //Vulnerabilidad 1: FALTA DE VALIDACIÓN DE ENTRADA
-// Definición: No validar formato/longitud de inputs (email, password). Acepta cualquier cadena sin verificar reglas de negocio.
-// Repercusiones: Credenciales débiles, inyecciones de código, datos malformados en BD, facilita fuerza bruta.
-// Mitigación: Usar librería validator, aplicar regex, establecer min/max longitud, sanitizar entradas.
-// Práctica de seguridad aplicable: WHITELIST Y BLACKLIST
+// Cambio: Agregar validación de email y password con librería 'validator'
+// Por qué: Evita credenciales inválidas y débiles; mitiga fuerza bruta y ataques de inyección
+// Cómo mitigará: Solo aceptará emails con formato válido y passwords con 8+ caracteres, 1 mayúscula y 1 número
+// Tiempo estimado: 10 minutos
+// Archivos a modificar: 1 (auth.controller.js)
+// Responsable: Fernando Jose Sic
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
         //Vulnerabilidad 2: ENUMERACIÓN DE USUARIOS
-        // Definición: Mensajes diferenciados que revelan si un email está registrado en el sistema.
-        // Repercusiones: Atacante descubre usuarios válidos, construye directorio, facilita phishing dirigido y credential stuffing.
-        // Mitigación: Usar mensajes genéricos para todos los errores de autenticación/registro.
-        // Práctica de seguridad aplicable: PRIVACIDAD VISUAL, DATOS SENSIBLES OCULTOS
+        // Cambio: Reemplazar mensaje específico "El usuario ya existe" por mensaje genérico "Error en el registro"
+        // Por qué: Oculta información sensible; evita que atacantes descubran emails válidos
+        // Cómo mitigará: Atacante no podrá enumerar usuarios; todos los errores verán el mismo mensaje genérico
+        // Tiempo estimado: 2 minutos
+        // Archivos a modificar: 1 (auth.controller.js)
+        // Responsable: Fernando Joñse Sic
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'El usuario ya existe' }); 

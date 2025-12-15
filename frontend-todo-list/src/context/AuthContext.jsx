@@ -10,26 +10,31 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedToken = getToken();
+        // CAMBIO 4 APLICADO: Ya no verificar token en localStorage
+        // El token está en httpOnly cookie y se envía automáticamente
         const storedUser = getUser();
 
-        if (storedToken && storedUser) {
-            setToken(storedToken);
+        if (storedUser) {
             setUser(storedUser);
+            setToken('authenticated'); // Indicador de autenticación
         }
         setLoading(false);
     }, []);
 
     const login = async (credentials) => {
         const res = await loginRequest(credentials);
-        saveAuth(res.data.token, res.data.user);
-        setToken(res.data.token);
+        // CAMBIO 4: Solo enviar usuario (token está en httpOnly cookie)
+        saveAuth(res.data.user);
+        // Token viene en httpOnly cookie, no en response JSON
+        setToken('authenticated'); // Indicador de que está autenticado
         setUser(res.data.user);
     };
     const register = async (credentials) => {
         const res = await registerRequest(credentials);
-        saveAuth(res.data.token, res.data.user);
-        setToken(res.data.token);
+        // CAMBIO 4: Solo enviar usuario (token está en httpOnly cookie)
+        saveAuth(res.data.user);
+        // Token viene en httpOnly cookie, no en response JSON
+        setToken('authenticated'); // Indicador de que está autenticado
         setUser(res.data.user);
     };
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/auth.routes');
@@ -17,6 +18,9 @@ app.use(cors({
         'https://to-do-list-eight-kappa-30.vercel.app'],
     credentials: true
 }));
+
+// CAMBIO 4: Parsear cookies en cada request
+app.use(cookieParser());
 
 app.use(express.json());
 

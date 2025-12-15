@@ -33,9 +33,19 @@ const detailTask = async (req, res) => {
 const createTask = async (req, res) => {
     try {
         const { title, description, type } = req.body;
-        // Vulnerabilidad 3: FALTA DE AUTORIZACIÓN (IDOR - Insecure Direct Object Reference)
-        // Antes de crear la tarea, validar que el 'type' pertenezca al usuario o sea global
-        // Previene IDOR: evita que usuario A cree tareas con types privados de usuario B
+        
+        // CAMBIO 3 APLICADO: AUTORIZACIÓN (RBAC/UBAC)
+        // Validar que el 'type' pertenezca al usuario o sea global antes de crear la tarea
+        // Esto previene IDOR: un usuario NO puede crear tareas con types privados de otros usuarios
+        const typeExists = await TaskType.findOne({
+            _id: type,
+            $or: [{ createdBy: null }, { createdBy: req.userId }]
+        });
+        
+        if (!typeExists) {
+            return res.status(403).json({ message: 'No autorizado para usar este tipo de tarea' });
+        }
+        
         const newTask = new Task({
             title,
             description,

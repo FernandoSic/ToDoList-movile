@@ -19,11 +19,7 @@ const getTaskTypes = async (req, res) => {
 
 // Vulnerabilidad 3: FALTA DE AUTORIZACIÓN (IDOR - Insecure Direct Object Reference)
 // Cambio: Agregar validación de autorización en createTask() antes de usar type; validar que type pertenezca a usuario o sea global
-// Por qué: Previene acceso a recursos de otros usuarios; aplica control de autorización basado en roles/usuarios
-// Cómo mitigará: Solo se permitirá crear tareas con types del usuario actual o types globales (createdBy: null), bloqueando IDOR
-// Tiempo estimado: 15 minutos
-// Archivos a modificar: 2 (task.controller.js en createTask; taskType.controller.js en creatreTaskType)
-// Responsable: Fernando Jose Sic
+
 const creatreTaskType = async (req, res) => {
     try {
         const { name } = req.body;

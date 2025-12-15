@@ -1,14 +1,10 @@
 const jwt = require('jsonwebtoken');
 
+// CAMBIO 4 APLICADO: Extraer token de cookie en lugar de header
 module.exports = (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-        
-        if (!authHeader) {
-            return res.status(401).json({ message: 'No autorizado' });
-        }
-
-        const token = authHeader.split(' ')[1];
+        // Intentar obtener token de cookie (nuevo método seguro)
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(401).json({ message: 'No autorizado' });

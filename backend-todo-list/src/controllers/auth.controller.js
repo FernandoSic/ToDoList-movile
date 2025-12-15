@@ -1,27 +1,41 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 //Vulnerabilidad 1: FALTA DE VALIDACIÓN DE ENTRADA
 // Cambio: Agregar validación de email y password con librería 'validator'
-// Por qué: Evita credenciales inválidas y débiles; mitiga fuerza bruta y ataques de inyección
-// Cómo mitigará: Solo aceptará emails con formato válido y passwords con 8+ caracteres, 1 mayúscula y 1 número
-// Tiempo estimado: 10 minutos
-// Archivos a modificar: 1 (auth.controller.js)
-// Responsable: Fernando Jose Sic
+
+// CAMBIO 1 APLICADO:
+// Función helper para validar password: mínimo 8 caracteres, 1 mayúscula, 1 número
+const isStrongPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return regex.test(password);
+};
+
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+        
+        // CAMBIO 1 APLICADO: VALIDACIÓN DE ENTRADA (WHITELIST)
+        // Validar que email sea válido
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: 'Error en el registro. Intenta de nuevo' });
+        }
+        
+        // Validar que password sea fuerte: 8+ chars, 1 mayúscula, 1 número
+        if (!isStrongPassword(password)) {
+            return res.status(400).json({ message: 'Error en el registro. Intenta de nuevo' });
+        }
+        
         //Vulnerabilidad 2: ENUMERACIÓN DE USUARIOS
         // Cambio: Reemplazar mensaje específico "El usuario ya existe" por mensaje genérico "Error en el registro"
-        // Por qué: Oculta información sensible; evita que atacantes descubran emails válidos
-        // Cómo mitigará: Atacante no podrá enumerar usuarios; todos los errores verán el mismo mensaje genérico
-        // Tiempo estimado: 2 minutos
-        // Archivos a modificar: 1 (auth.controller.js)
-        // Responsable: Fernando Joñse Sic
+        
+        
+        // CAMBIO 2 APLICADO: PRIVACIDAD VISUAL - Mensaje genérico
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({ message: 'El usuario ya existe' }); 
+            return res.status(400).json({ message: 'Error en el registro. Intenta de nuevo' }); 
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -50,8 +64,15 @@ const register = async (req, res) => {
             { expiresIn: '1d' }
         );
 
+        // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 86400000
+        });
+
         res.status(201).json({
-            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -69,14 +90,19 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        // CAMBIO 1: Validar email
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: 'Credenciales inválidas' });
+        }
+
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Credenciales inválidas' });
+            return res.status(400).json({ message: 'Credenciales inválidas' }); 
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Credenciales inválidas' });
+            return res.status(400).json({ message: 'Credenciales inválidas' }); // CAMBIO 2: mensaje genérico
         }
 
         const token = jwt.sign(
@@ -85,8 +111,17 @@ const login = async (req, res) => {
             { expiresIn: '1d' }
         );
 
+        // CAMBIO 4 APLICADO: TOKEN EN httpOnly COOKIE
+        // Enviar token en cookie httpOnly (no accesible a JavaScript)
+        res.cookie('token', token, {
+            httpOnly: true,      // No accesible a JavaScript (protege contra XSS)
+            secure: false,       
+            sameSite: 'strict', 
+            maxAge: 86400000     // 1 día
+        });
+
+        // No devolver token en JSON, solo datos de usuario
         res.status(201).json({
-            token,
             user: {
                 id: user._id,
                 username: user.username,

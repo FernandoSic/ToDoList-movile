@@ -1,4 +1,8 @@
-// Vulnerabilidad: EXPOSICIÓN DE TOKEN EN localStorage
+// Vulnerabilidad 4: EXPOSICIÓN DE TOKEN EN localStorage (XSS - Cross-Site Scripting)
+// Definición: Guardar JWT en localStorage, accesible a cualquier script JS en la página.
+// Repercusiones: Un ataque XSS roba token instantáneamente, session hijacking completo, impersonación de usuario, acceso total a datos.
+// Mitigación: Almacenar token en cookie httpOnly/Secure/SameSite (inaccesible a JS), usar validación de autenticación en backend.
+// Práctica de seguridad aplicable: PRIVACIDAD VISUAL (token oculto en httpOnly cookie) + COOKIES (httpOnly/Secure/SameSite).
 const TOKEN_KEY = 'token';
 const USER_KEY = 'user';
 

@@ -17,7 +17,11 @@ const getTaskTypes = async (req, res) => {
     }
 };
 
-// Vulnerabilidad:  FALTA DE AUTORIZACIÓN (IDOR)
+// Vulnerabilidad 3: FALTA DE AUTORIZACIÓN (IDOR - Insecure Direct Object Reference)
+// Definición: No validar que el usuario sea propietario del recurso antes de permitir acceso/modificación.
+// Repercusiones: Acceso a recursos de otros usuarios, filtración de metadata, escalada de privilegios, violación de privacidad.
+// Mitigación: Verificar que el recurso (type) pertenezca al usuario autenticado o sea público antes de usarlo.
+// Práctica de seguridad aplicable: AUTORIZACIÓN (RBAC Y UBAC) - Validar que type pertenezca a usuario o sea global antes de crear tarea.
 const creatreTaskType = async (req, res) => {
     try {
         const { name } = req.body;

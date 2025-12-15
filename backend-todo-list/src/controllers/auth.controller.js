@@ -2,11 +2,19 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-//Vulnerabilidad: FALTA DE VALIDACIÓN DE ENTRADA
+//Vulnerabilidad 1: FALTA DE VALIDACIÓN DE ENTRADA
+// Definición: No validar formato/longitud de inputs (email, password). Acepta cualquier cadena sin verificar reglas de negocio.
+// Repercusiones: Credenciales débiles, inyecciones de código, datos malformados en BD, facilita fuerza bruta.
+// Mitigación: Usar librería validator, aplicar regex, establecer min/max longitud, sanitizar entradas.
+// Práctica de seguridad aplicable: WHITELIST Y BLACKLIST
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        //Vulnerabilidad: ENUMERACIÓN DE USUARIOS
+        //Vulnerabilidad 2: ENUMERACIÓN DE USUARIOS
+        // Definición: Mensajes diferenciados que revelan si un email está registrado en el sistema.
+        // Repercusiones: Atacante descubre usuarios válidos, construye directorio, facilita phishing dirigido y credential stuffing.
+        // Mitigación: Usar mensajes genéricos para todos los errores de autenticación/registro.
+        // Práctica de seguridad aplicable: PRIVACIDAD VISUAL, DATOS SENSIBLES OCULTOS
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'El usuario ya existe' }); 
